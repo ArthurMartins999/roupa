@@ -1,875 +1,316 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAMISAS | Vista Sua Personalidade</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            color: #111;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* HEADER */
-        .header {
-            position: fixed; top: 0; left: 0; right: 0; height: 64px;
-            background: #000; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 1000; border-bottom: 1px solid #1a1a1a;
-        }
-        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; cursor: pointer; }
-        .logo-icon { width: 36px; height: 36px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .logo-icon i { color: #000; font-size: 18px; }
-        .logo-text { font-weight: 700; font-size: 15px; letter-spacing: 1px; }
-        .nav-center { display: flex; gap: 32px; }
-        .nav-center a {
-            color: #999; text-decoration: none; font-size: 14px; font-weight: 500;
-            transition: color 0.2s; position: relative; cursor: pointer;
-        }
-        .nav-center a:hover, .nav-center a.active { color: white; }
-        .nav-center a.active::after {
-            content: ''; position: absolute; bottom: -22px; left: 0; right: 0; height: 2px; background: white;
-        }
-        .header-right { display: flex; align-items: center; gap: 18px; }
-        .header-right button {
-            background: none; border: none; color: white; font-size: 18px; cursor: pointer; position: relative;
-        }
-        .header-right button:hover { opacity: 0.8; }
-        .cart-count {
-            position: absolute; top: -8px; right: -10px; background: white; color: black;
-            font-size: 11px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .menu-btn { display: none; background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
-
-        /* SEARCH */
-        .search-bar {
-            position: absolute; top: 64px; left: 0; right: 0; background: #111;
-            padding: 16px 24px; display: none; z-index: 999; border-bottom: 1px solid #222;
-        }
-        .search-bar.open { display: block; }
-        .search-bar input {
-            width: 100%; max-width: 600px; margin: 0 auto; display: block;
-            padding: 14px 20px; border-radius: 50px; border: none; background: #1a1a1a;
-            color: white; font-size: 15px; outline: none;
-        }
-        .search-bar input::placeholder { color: #666; }
-
-        /* LAYOUT */
-        .main-layout { display: flex; margin-top: 64px; min-height: calc(100vh - 64px); }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 240px; background: #000; padding: 20px 12px; display: flex; flex-direction: column; gap: 6px;
-            position: fixed; top: 64px; left: 0; bottom: 0; overflow-y: auto; z-index: 100; border-right: 1px solid #1a1a1a;
-        }
-        .sidebar-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px;
-            color: #ccc; font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer;
-            border: none; background: none; width: 100%; text-align: left;
-        }
-        .sidebar-item:hover, .sidebar-item.active { background: #1a1a1a; color: white; }
-        .sidebar-item i { width: 20px; text-align: center; font-size: 15px; }
-        .sidebar-item .sub { font-size: 11px; color: #666; display: block; margin-top: 2px; font-weight: 400; }
-        .sidebar-item .text-wrap { display: flex; flex-direction: column; flex: 1; }
-        .sidebar-divider { height: 1px; background: #222; margin: 10px 0; }
-
-        /* CONTENT */
-        .content { margin-left: 240px; flex: 1; background: #f8f8f8; min-height: calc(100vh - 64px); }
-
-        /* HERO */
-        .hero {
-            position: relative; height: 420px; background: #0a0a0a; overflow: hidden; display: flex; align-items: center;
-        }
-        .hero-bg {
-            position: absolute; inset: 0;
-            background: linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 35%, transparent 75%),
-                        url('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1600&q=80') center right / cover no-repeat;
-        }
-        .hero-content { position: relative; z-index: 2; padding: 0 60px; max-width: 520px; }
-        .hero h1 { font-size: 48px; font-weight: 800; color: white; line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px; }
-        .hero p { color: #aaa; font-size: 16px; line-height: 1.5; margin-bottom: 28px; }
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 8px; background: white; color: black;
-            padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 14px;
-            text-decoration: none; transition: all 0.2s; border: none; cursor: pointer;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,255,255,0.2); }
-
-        /* TRUST */
-        .trust-bar {
-            background: #111; display: flex; justify-content: center; gap: 60px;
-            padding: 18px 40px; border-top: 1px solid #222; border-bottom: 1px solid #222;
-        }
-        .trust-item { display: flex; align-items: center; gap: 12px; color: #ccc; font-size: 13px; }
-        .trust-item i { font-size: 18px; color: #888; }
-        .trust-item strong { display: block; color: white; font-size: 13px; font-weight: 600; }
-        .trust-item span { font-size: 12px; color: #777; }
-
-        /* PRODUCTS */
-        .section { padding: 40px 40px 20px; background: #f8f8f8; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-        .section-header h2 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; color: #111; }
-        .section-header .view-all {
-            color: #555; font-size: 13px; text-decoration: none; display: flex; align-items: center;
-            gap: 6px; font-weight: 500; cursor: pointer; background: none; border: none;
-        }
-        .section-header .view-all:hover { color: #000; }
-        .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-        .chip {
-            padding: 8px 16px; border-radius: 50px; border: 1px solid #ddd; background: white;
-            font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
-        }
-        .chip:hover, .chip.active { background: #111; color: white; border-color: #111; }
-        .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .product-card {
-            background: white; border-radius: 12px; overflow: hidden; transition: all 0.25s;
-            cursor: pointer; border: 1px solid #eee; position: relative;
-        }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
-        .product-image { position: relative; aspect-ratio: 1 / 1.05; background: #f0f0f0; overflow: hidden; }
-        .product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-        .product-card:hover .product-image img { transform: scale(1.05); }
-        .product-overlay {
-            position: absolute; bottom: 28%; left: 0; right: 0; text-align: center; color: white;
-            font-size: 20px; font-weight: 800; letter-spacing: 3px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            pointer-events: none; z-index: 1;
-        }
-        .badge-novo {
-            position: absolute; top: 12px; left: 12px; background: #111; color: white;
-            font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.5px; z-index: 2;
-        }
-        .badge-promo {
-            position: absolute; top: 12px; left: 12px; background: #e11d48; color: white;
-            font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.5px; z-index: 2;
-        }
-        .btn-fav {
-            position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: white;
-            border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 2; transition: all 0.2s; color: #333;
-        }
-        .btn-fav:hover, .btn-fav.active { color: #e11d48; }
-        .btn-fav.active i { font-weight: 900; }
-        .product-info { padding: 16px; }
-        .product-name { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 8px; line-height: 1.3; }
-        .product-price { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 2px; }
-        .product-price .old { font-size: 13px; color: #999; text-decoration: line-through; font-weight: 400; margin-left: 6px; }
-        .product-installment { font-size: 12px; color: #777; }
-        .btn-add {
-            width: 100%; margin-top: 12px; padding: 10px; background: #111; color: white; border: none;
-            border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: none;
-        }
-        .product-card:hover .btn-add { display: block; }
-        .btn-add:hover { background: #333; }
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #888; }
-        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
-
-        /* FEATURES */
-        .features {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-            padding: 30px 40px; background: white; border-top: 1px solid #eee;
-        }
-        .feature-item { display: flex; align-items: flex-start; gap: 14px; }
-        .feature-item i { font-size: 22px; color: #333; margin-top: 2px; }
-        .feature-item strong { display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 4px; }
-        .feature-item span { font-size: 12px; color: #666; line-height: 1.4; }
-
-        /* FOOTER */
-        .footer {
-            background: #000; color: white; padding: 28px 40px; display: flex;
-            align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap;
-        }
-        .footer-left { display: flex; align-items: center; gap: 16px; }
-        .footer-left i { font-size: 20px; color: #888; }
-        .footer-left strong { display: block; font-size: 13px; font-weight: 600; }
-        .footer-left span { font-size: 12px; color: #777; }
-        .newsletter { display: flex; gap: 0; flex: 1; max-width: 480px; }
-        .newsletter input {
-            flex: 1; padding: 14px 18px; border: none; border-radius: 8px 0 0 8px;
-            background: #1a1a1a; color: white; font-size: 14px; outline: none;
-        }
-        .newsletter input::placeholder { color: #666; }
-        .newsletter button {
-            padding: 14px 24px; background: white; color: black; border: none;
-            border-radius: 0 8px 8px 0; font-weight: 700; font-size: 13px; cursor: pointer; letter-spacing: 0.5px;
-        }
-        .newsletter button:hover { background: #eee; }
-        .social { display: flex; align-items: center; gap: 16px; }
-        .social span { font-size: 12px; color: #777; margin-right: 4px; }
-        .social a { color: #aaa; font-size: 18px; transition: color 0.2s; cursor: pointer; }
-        .social a:hover { color: white; }
-
-        /* CART / ACCOUNT / REVIEWS SIDEBARS */
-        .cart-overlay, .account-overlay, .reviews-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
-            opacity: 0; visibility: hidden; transition: all 0.3s;
-        }
-        .cart-overlay.open, .account-overlay.open, .reviews-overlay.open { opacity: 1; visibility: visible; }
-        .cart-sidebar, .account-sidebar, .reviews-sidebar {
-            position: fixed; top: 0; right: -420px; width: 400px; height: 100%; background: white;
-            z-index: 2001; transition: right 0.3s ease; display: flex; flex-direction: column;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.15);
-        }
-        .cart-sidebar.open, .account-sidebar.open, .reviews-sidebar.open { right: 0; }
-        .cart-header, .account-header, .reviews-header {
-            padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;
-        }
-        .cart-header h3, .account-header h3, .reviews-header h3 { font-size: 16px; font-weight: 700; }
-        .cart-close, .account-close, .reviews-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #666; }
-        .cart-items, .account-body, .reviews-body { flex: 1; overflow-y: auto; padding: 16px; }
-        .cart-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-        .cart-item img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; background: #f0f0f0; }
-        .cart-item-info { flex: 1; }
-        .cart-item-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .cart-item-info .price { font-size: 14px; font-weight: 700; }
-        .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-        .cart-item-qty button { width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; font-size: 14px; }
-        .cart-empty { text-align: center; padding: 60px 20px; color: #999; }
-        .cart-footer { padding: 20px; border-top: 1px solid #eee; }
-        .cart-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-        .btn-checkout {
-            width: 100%; padding: 16px; background: #111; color: white; border: none;
-            border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer;
-        }
-        .btn-checkout:hover { background: #333; }
-
-        /* ACCOUNT */
-        .account-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; margin-top: 14px; }
-        .account-form input { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
-        .account-form input:focus { border-color: #111; }
-        .account-form .btn-login {
-            width: 100%; margin-top: 20px; padding: 14px; background: #111; color: white;
-            border: none; border-radius: 10px; font-weight: 700; cursor: pointer;
-        }
-        .account-form .btn-login:hover { background: #333; }
-        .account-logged { text-align: center; padding: 40px 20px; }
-        .account-logged i { font-size: 48px; color: #22c55e; margin-bottom: 16px; }
-
-        /* REVIEWS */
-        .review-card { background: #f8f8f8; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-        .review-card .stars { color: #f59e0b; margin-bottom: 8px; font-size: 14px; }
-        .review-card p { font-size: 13px; color: #444; line-height: 1.5; margin-bottom: 8px; }
-        .review-card .author { font-size: 12px; color: #888; font-weight: 600; }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transition: all 0.3s;
-        }
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-        .modal {
-            background: white; border-radius: 16px; width: 90%; max-width: 800px; max-height: 90vh;
-            overflow: auto; display: grid; grid-template-columns: 1fr 1fr; position: relative;
-        }
-        .modal-close {
-            position: absolute; top: 16px; right: 16px; background: white; border: none;
-            width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer;
-            z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .modal-image { background: #f5f5f5; }
-        .modal-image img { width: 100%; height: 100%; object-fit: cover; min-height: 400px; }
-        .modal-info { padding: 40px; display: flex; flex-direction: column; }
-        .modal-info .badge {
-            display: inline-block; background: #111; color: white; font-size: 11px; font-weight: 700;
-            padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; width: fit-content;
-        }
-        .modal-info h2 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
-        .modal-price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-        .modal-installment { color: #666; font-size: 14px; margin-bottom: 24px; }
-        .size-selector { margin-bottom: 24px; }
-        .size-selector label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
-        .sizes { display: flex; gap: 8px; }
-        .size-btn {
-            width: 44px; height: 44px; border: 1.5px solid #ddd; background: white; border-radius: 8px;
-            font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .size-btn:hover, .size-btn.selected { border-color: #111; background: #111; color: white; }
-        .modal-add {
-            margin-top: auto; padding: 16px; background: #111; color: white; border: none;
-            border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer;
-        }
-        .modal-add:hover { background: #333; }
-
-        /* TOAST */
-        .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #111; color: white; padding: 14px 28px; border-radius: 50px;
-            font-size: 14px; font-weight: 500; z-index: 4000; transition: transform 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; text-align: center;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); }
-
-        /* RESPONSIVE */
-        @media (max-width: 1100px) {
-            .products-grid { grid-template-columns: repeat(2, 1fr); }
-            .features { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 800px) {
-            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
-            .sidebar.open { transform: translateX(0); }
-            .content { margin-left: 0; }
-            .nav-center { display: none; }
-            .menu-btn { display: block; }
-            .hero h1 { font-size: 32px; }
-            .hero-content { padding: 0 24px; }
-            .trust-bar { flex-wrap: wrap; gap: 20px; }
-            .modal { grid-template-columns: 1fr; }
-            .footer { flex-direction: column; align-items: flex-start; }
-            .newsletter { max-width: 100%; width: 100%; }
-            .cart-sidebar, .account-sidebar, .reviews-sidebar { width: 100%; right: -100%; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYNTHETIC GRIN | Streetwear</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#eee;min-height:100vh;overflow-x:hidden}
+.header{position:fixed;top:0;left:0;right:0;height:64px;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:1000;border-bottom:1px solid #1a1a1a}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:white;cursor:pointer}
+.logo-img{width:42px;height:42px;border-radius:8px;object-fit:cover;background:#111}
+.logo-text{font-weight:800;font-size:14px;letter-spacing:2px}
+.nav-center{display:flex;gap:24px}
+.nav-center a{color:#888;text-decoration:none;font-size:13px;font-weight:600;cursor:pointer;transition:color .2s;position:relative}
+.nav-center a:hover,.nav-center a.active{color:white}
+.nav-center a.active::after{content:'';position:absolute;bottom:-22px;left:0;right:0;height:2px;background:white}
+.header-right{display:flex;align-items:center;gap:18px}
+.header-right button{background:none;border:none;color:white;font-size:18px;cursor:pointer;position:relative}
+.cart-count{position:absolute;top:-8px;right:-10px;background:#e11d48;color:white;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.menu-btn{display:none;background:none;border:none;color:white;font-size:20px;cursor:pointer}
+.search-bar{position:absolute;top:64px;left:0;right:0;background:#111;padding:16px 24px;display:none;z-index:999;border-bottom:1px solid #222}
+.search-bar.open{display:block}
+.search-bar input{width:100%;max-width:600px;margin:0 auto;display:block;padding:14px 20px;border-radius:50px;border:none;background:#1a1a1a;color:white;font-size:15px;outline:none}
+.main-layout{display:flex;margin-top:64px;min-height:calc(100vh - 64px)}
+.sidebar{width:230px;background:#000;padding:20px 12px;display:flex;flex-direction:column;gap:6px;position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:100;border-right:1px solid #1a1a1a}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;color:#aaa;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .2s}
+.sidebar-item:hover,.sidebar-item.active{background:#1a1a1a;color:white}
+.sidebar-item i{width:18px;text-align:center}
+.sidebar-item .sub{font-size:10px;color:#555;display:block;margin-top:2px}
+.sidebar-item .text-wrap{display:flex;flex-direction:column;flex:1}
+.sidebar-divider{height:1px;background:#222;margin:10px 0}
+.content{margin-left:230px;flex:1;background:#0d0d0d;min-height:calc(100vh - 64px)}
+.hero{position:relative;height:360px;background:#000;overflow:hidden;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,#1a1a1a 0%,#000 70%);opacity:.8}
+.hero-content{position:relative;z-index:2;padding:0 48px;max-width:520px}
+.hero h1{font-size:40px;font-weight:800;color:white;line-height:1.1;letter-spacing:-1px;margin-bottom:12px}
+.hero p{color:#999;font-size:14px;margin-bottom:22px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:white;color:black;padding:12px 24px;border-radius:50px;font-weight:700;font-size:13px;border:none;cursor:pointer}
+.trust-bar{background:#111;display:flex;justify-content:center;gap:48px;padding:14px 36px;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a}
+.trust-item{display:flex;align-items:center;gap:10px;color:#aaa;font-size:12px}
+.trust-item i{font-size:15px;color:#666}
+.trust-item strong{display:block;color:white;font-size:12px}
+.section{padding:32px 32px 16px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.section-header h2{font-size:15px;font-weight:700;letter-spacing:1px;color:white}
+.section-header .view-all{color:#777;font-size:12px;background:none;border:none;cursor:pointer}
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:7px 14px;border-radius:50px;border:1px solid #333;background:#151515;font-size:12px;font-weight:500;cursor:pointer;color:#aaa;transition:all .2s}
+.chip:hover,.chip.active{background:white;color:black;border-color:white}
+.products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.product-card{background:#151515;border-radius:12px;overflow:hidden;transition:all .25s;cursor:pointer;border:1px solid #222;position:relative}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.4);border-color:#333}
+.product-image{position:relative;aspect-ratio:1;background:#0a0a0a;overflow:hidden}
+.product-image img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.product-card:hover .product-image img{transform:scale(1.05)}
+.badge-novo{position:absolute;top:10px;left:10px;background:#e11d48;color:white;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;z-index:2}
+.badge-promo{position:absolute;top:10px;left:10px;background:#f59e0b;color:black;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;z-index:2}
+.btn-fav{position:absolute;top:10px;right:10px;width:30px;height:30px;background:rgba(0,0,0,.6);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;color:#ccc}
+.btn-fav:hover,.btn-fav.active{color:#e11d48}
+.product-info{padding:12px}
+.product-name{font-size:12px;font-weight:600;color:#eee;margin-bottom:5px;line-height:1.3}
+.product-price{font-size:14px;font-weight:700;color:white}
+.product-price .old{font-size:11px;color:#666;text-decoration:line-through;font-weight:400;margin-left:5px}
+.product-installment{font-size:10px;color:#666;margin-top:2px}
+.btn-add{width:100%;margin-top:8px;padding:8px;background:white;color:black;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;display:none}
+.product-card:hover .btn-add{display:block}
+.empty-state{grid-column:1/-1;text-align:center;padding:50px 20px;color:#666}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:24px 32px;background:#111;border-top:1px solid #1a1a1a}
+.feature-item{display:flex;align-items:flex-start;gap:10px}
+.feature-item i{font-size:16px;color:#888;margin-top:2px}
+.feature-item strong{display:block;font-size:11px;font-weight:700;color:white;margin-bottom:2px}
+.feature-item span{font-size:10px;color:#777;line-height:1.4}
+.footer{background:#000;color:white;padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid #1a1a1a}
+.footer-left{display:flex;align-items:center;gap:10px}
+.footer-left i{font-size:16px;color:#555}
+.footer-left strong{display:block;font-size:11px;font-weight:600}
+.footer-left span{font-size:10px;color:#666}
+.newsletter{display:flex;flex:1;max-width:400px}
+.newsletter input{flex:1;padding:11px 14px;border:none;border-radius:8px 0 0 8px;background:#1a1a1a;color:white;font-size:12px;outline:none}
+.newsletter button{padding:11px 18px;background:white;color:black;border:none;border-radius:0 8px 8px 0;font-weight:700;font-size:11px;cursor:pointer}
+.social{display:flex;align-items:center;gap:12px}
+.social span{font-size:10px;color:#666}
+.social a{color:#888;font-size:15px;cursor:pointer}
+.social a:hover{color:white}
+.cart-overlay,.account-overlay,.reviews-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;opacity:0;visibility:hidden;transition:all .3s}
+.cart-overlay.open,.account-overlay.open,.reviews-overlay.open{opacity:1;visibility:visible}
+.cart-sidebar,.account-sidebar,.reviews-sidebar{position:fixed;top:0;right:-380px;width:360px;height:100%;background:#111;z-index:2001;transition:right .3s ease;display:flex;flex-direction:column;box-shadow:-10px 0 30px rgba(0,0,0,.5)}
+.cart-sidebar.open,.account-sidebar.open,.reviews-sidebar.open{right:0}
+.cart-header,.account-header,.reviews-header{padding:16px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center}
+.cart-header h3,.account-header h3,.reviews-header h3{font-size:14px;font-weight:700;color:white}
+.cart-close,.account-close,.reviews-close{background:none;border:none;font-size:16px;cursor:pointer;color:#888}
+.cart-items,.account-body,.reviews-body{flex:1;overflow-y:auto;padding:12px}
+.cart-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #1a1a1a}
+.cart-item img{width:58px;height:58px;object-fit:cover;border-radius:8px;background:#0a0a0a}
+.cart-item-info{flex:1}
+.cart-item-info h4{font-size:11px;font-weight:600;color:#eee;margin-bottom:2px}
+.cart-item-info .price{font-size:12px;font-weight:700;color:white}
+.cart-item-qty{display:flex;align-items:center;gap:6px;margin-top:5px}
+.cart-item-qty button{width:20px;height:20px;border:1px solid #333;background:#1a1a1a;border-radius:4px;cursor:pointer;color:white;font-size:12px}
+.cart-empty{text-align:center;padding:40px 20px;color:#666}
+.cart-footer{padding:16px;border-top:1px solid #222}
+.cart-total{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:12px;color:white}
+.btn-checkout{width:100%;padding:13px;background:white;color:black;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer}
+.account-form label{display:block;font-size:11px;font-weight:600;margin-bottom:4px;margin-top:10px;color:#aaa}
+.account-form input{width:100%;padding:10px 12px;border:1px solid #333;border-radius:8px;font-size:12px;outline:none;background:#1a1a1a;color:white}
+.account-form .btn-login{width:100%;margin-top:16px;padding:12px;background:white;color:black;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+.account-logged{text-align:center;padding:36px 20px}
+.account-logged i{font-size:38px;color:#22c55e;margin-bottom:10px}
+.review-card{background:#1a1a1a;border-radius:10px;padding:12px;margin-bottom:8px}
+.review-card .stars{color:#f59e0b;margin-bottom:5px;font-size:12px}
+.review-card p{font-size:11px;color:#bbb;line-height:1.5;margin-bottom:5px}
+.review-card .author{font-size:10px;color:#666;font-weight:600}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:#111;border-radius:14px;width:90%;max-width:720px;max-height:90vh;overflow:auto;display:grid;grid-template-columns:1fr 1fr;position:relative;border:1px solid #222}
+.modal-close{position:absolute;top:12px;right:12px;background:#1a1a1a;border:none;width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;z-index:10;color:white}
+.modal-image{background:#0a0a0a}
+.modal-image img{width:100%;height:100%;object-fit:cover;min-height:360px}
+.modal-info{padding:28px;display:flex;flex-direction:column}
+.modal-info .badge{display:inline-block;background:#e11d48;color:white;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;margin-bottom:8px;width:fit-content}
+.modal-info h2{font-size:18px;font-weight:700;margin-bottom:8px;color:white}
+.modal-price{font-size:22px;font-weight:800;margin-bottom:3px;color:white}
+.modal-installment{color:#777;font-size:12px;margin-bottom:18px}
+.size-selector{margin-bottom:18px}
+.size-selector label{display:block;font-size:11px;font-weight:600;margin-bottom:7px;color:#aaa}
+.sizes{display:flex;gap:7px}
+.size-btn{width:40px;height:40px;border:1.5px solid #333;background:#1a1a1a;border-radius:8px;font-weight:600;cursor:pointer;color:#ccc;transition:all .2s;font-size:12px}
+.size-btn:hover,.size-btn.selected{border-color:white;background:white;color:black}
+.modal-add{margin-top:auto;padding:13px;background:white;color:black;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:white;color:black;padding:11px 22px;border-radius:50px;font-size:12px;font-weight:600;z-index:4000;transition:transform .3s;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:1100px){.products-grid{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.content{margin-left:0}.nav-center{display:none}.menu-btn{display:block}.hero h1{font-size:26px}.hero-content{padding:0 20px}.trust-bar{flex-wrap:wrap;gap:14px}.modal{grid-template-columns:1fr}.footer{flex-direction:column;align-items:flex-start}.newsletter{max-width:100%;width:100%}.cart-sidebar,.account-sidebar,.reviews-sidebar{width:100%;right:-100%}}
+</style>
 </head>
 <body>
-    <header class="header">
-        <div style="display:flex;align-items:center;gap:12px;">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <a class="logo" onclick="goHome()">
-                <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
-                <span class="logo-text">CAMISAS</span>
-            </a>
-        </div>
-        <nav class="nav-center">
-            <a class="active" data-filter="all" onclick="setNavFilter(this, 'all')">Home</a>
-            <a data-filter="masculino" onclick="setNavFilter(this, 'masculino')">Masculino</a>
-            <a data-filter="feminino" onclick="setNavFilter(this, 'feminino')">Feminino</a>
-            <a data-filter="geral" onclick="setNavFilter(this, 'geral')">Geral</a>
-        </nav>
-        <div class="header-right">
-            <button title="Buscar" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
-            <button title="Conta" onclick="toggleAccount()"><i class="fas fa-user"></i></button>
-            <button title="Carrinho" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count" id="cartCount">0</span>
-            </button>
-        </div>
-    </header>
-
-    <div class="search-bar" id="searchBar">
-        <input type="text" id="searchInput" placeholder="Buscar camisetas..." oninput="handleSearch(this.value)">
-    </div>
-
-    <div class="main-layout">
-        <aside class="sidebar" id="sidebar">
-            <button class="sidebar-item active" data-side="all" onclick="setSidebarFilter(this, 'all')">
-                <i class="fas fa-tshirt"></i>
-                <div class="text-wrap"><span>Categorias</span></div>
-                <i class="fas fa-chevron-right" style="margin-left:auto;font-size:12px;color:#555;"></i>
-            </button>
-            <div class="sidebar-divider"></div>
-            <button class="sidebar-item" data-side="novidades" onclick="setSidebarFilter(this, 'novidades')">
-                <i class="fas fa-sparkles"></i>
-                <div class="text-wrap"><span>Novidades</span><span class="sub">Veja os lançamentos</span></div>
-            </button>
-            <button class="sidebar-item" data-side="promocoes" onclick="setSidebarFilter(this, 'promocoes')">
-                <i class="fas fa-percent"></i>
-                <div class="text-wrap"><span>Promoções</span><span class="sub">Ofertas especiais</span></div>
-            </button>
-            <button class="sidebar-item" data-side="mais-vendidos" onclick="setSidebarFilter(this, 'mais-vendidos')">
-                <i class="fas fa-fire"></i>
-                <div class="text-wrap"><span>Mais Vendidos</span><span class="sub">Os favoritos da galera</span></div>
-            </button>
-            <button class="sidebar-item" data-side="colecoes" onclick="setSidebarFilter(this, 'colecoes')">
-                <i class="fas fa-layer-group"></i>
-                <div class="text-wrap"><span>Coleções</span><span class="sub">Coleções exclusivas</span></div>
-            </button>
-            <button class="sidebar-item" data-side="avaliacoes" onclick="openReviews()">
-                <i class="fas fa-star"></i>
-                <div class="text-wrap"><span>Avaliações</span><span class="sub">O que dizem sobre nós</span></div>
-            </button>
-        </aside>
-
-        <main class="content">
-            <section class="hero" id="heroSection">
-                <div class="hero-bg"></div>
-                <div class="hero-content">
-                    <h1>VISTA SUA<br>PERSONALIDADE</h1>
-                    <p>Estilo, conforto e atitude<br>em cada detalhe.</p>
-                    <button class="btn-primary" onclick="setSidebarFilter(null, 'colecoes')">
-                        VER COLEÇÕES <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </section>
-
-            <div class="trust-bar">
-                <div class="trust-item">
-                    <i class="fas fa-truck"></i>
-                    <div><strong>Frete rápido</strong><span>Para todo o Brasil</span></div>
-                </div>
-                <div class="trust-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <div><strong>Compra segura</strong><span>Seus dados protegidos</span></div>
-                </div>
-                <div class="trust-item">
-                    <i class="fas fa-exchange-alt"></i>
-                    <div><strong>Troca fácil</strong><span>Até 7 dias para trocar</span></div>
-                </div>
-            </div>
-
-            <section class="section" id="destaques">
-                <div class="section-header">
-                    <h2 id="sectionTitle">DESTAQUES</h2>
-                    <button class="view-all" onclick="showAllProducts()">Ver todos <i class="fas fa-arrow-right"></i></button>
-                </div>
-                <div class="filter-chips" id="filterChips">
-                    <button class="chip active" onclick="setChipFilter(this, 'all')">Todos</button>
-                    <button class="chip" onclick="setChipFilter(this, 'masculino')">Masculino</button>
-                    <button class="chip" onclick="setChipFilter(this, 'feminino')">Feminino</button>
-                    <button class="chip" onclick="setChipFilter(this, 'preta')">Pretas</button>
-                    <button class="chip" onclick="setChipFilter(this, 'branca')">Brancas</button>
-                </div>
-                <div class="products-grid" id="productsGrid"></div>
-            </section>
-
-            <div class="features">
-                <div class="feature-item">
-                    <i class="fas fa-award"></i>
-                    <div><strong>Qualidade Premium</strong><span>Tecidos selecionados e acabamento impecável.</span></div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-credit-card"></i>
-                    <div><strong>Parcele em até 3x</strong><span>Sem juros no cartão de crédito.</span></div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-lock"></i>
-                    <div><strong>Site 100% seguro</strong><span>Seus dados e pagamentos protegidos.</span></div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-headset"></i>
-                    <div><strong>Atendimento</strong><span>Suporte rápido e humano pelo WhatsApp.</span></div>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <div class="footer-left">
-                    <i class="fas fa-envelope"></i>
-                    <div>
-                        <strong>RECEBA NOVIDADES E PROMOÇÕES</strong>
-                        <span>Cadastre seu e-mail e não perca nada!</span>
-                    </div>
-                </div>
-                <form class="newsletter" onsubmit="subscribeNewsletter(event)">
-                    <input type="email" placeholder="Seu melhor e-mail" required id="emailInput">
-                    <button type="submit">CADASTRAR</button>
-                </form>
-                <div class="social">
-                    <span>SIGA-NOS</span>
-                    <a onclick="openSocial('instagram')" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a onclick="openSocial('tiktok')" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                    <a onclick="openSocial('whatsapp')" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </footer>
-        </main>
-    </div>
-
-    <!-- CART -->
-    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <h3>Seu Carrinho (<span id="cartCountText">0</span>)</h3>
-            <button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="cart-items" id="cartItems"></div>
-        <div class="cart-footer" id="cartFooter" style="display:none;">
-            <div class="cart-total"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
-            <button class="btn-checkout" onclick="checkout()">FINALIZAR COMPRA</button>
-        </div>
-    </div>
-
-    <!-- ACCOUNT -->
-    <div class="account-overlay" id="accountOverlay" onclick="toggleAccount()"></div>
-    <div class="account-sidebar" id="accountSidebar">
-        <div class="account-header">
-            <h3>Minha Conta</h3>
-            <button class="account-close" onclick="toggleAccount()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="account-body" id="accountBody"></div>
-    </div>
-
-    <!-- REVIEWS -->
-    <div class="reviews-overlay" id="reviewsOverlay" onclick="closeReviews()"></div>
-    <div class="reviews-sidebar" id="reviewsSidebar">
-        <div class="reviews-header">
-            <h3>Avaliações dos Clientes</h3>
-            <button class="reviews-close" onclick="closeReviews()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="reviews-body">
-            <div class="review-card"><div class="stars">★★★★★</div><p>"Qualidade absurda! O tecido é macio e o caimento perfeito. Já comprei 4 camisetas."</p><div class="author">— Marina S.</div></div>
-            <div class="review-card"><div class="stars">★★★★★</div><p>"Entrega super rápida e a camiseta Disciplina ficou exatamente como nas fotos. Recomendo demais!"</p><div class="author">— Lucas R.</div></div>
-            <div class="review-card"><div class="stars">★★★★☆</div><p>"Gostei bastante. Só achei o tamanho um pouco justo. Próxima vez peço GG."</p><div class="author">— Felipe M.</div></div>
-            <div class="review-card"><div class="stars">★★★★★</div><p>"Atendimento pelo WhatsApp foi excelente. Resolveram minha troca em menos de 2 dias."</p><div class="author">— Juliana P.</div></div>
-            <div class="review-card"><div class="stars">★★★★★</div><p>"As camisetas pretas não desbotam e o print da Disciplina é muito bem feito."</p><div class="author">— Rafael T.</div></div>
-        </div>
-    </div>
-
-    <!-- PRODUCT MODAL -->
-    <div class="modal-overlay" id="productModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-            <div class="modal-image"><img id="modalImg" src="" alt=""></div>
-            <div class="modal-info">
-                <span class="badge" id="modalBadge">NOVO</span>
-                <h2 id="modalName"></h2>
-                <div class="modal-price" id="modalPrice"></div>
-                <div class="modal-installment" id="modalInstallment"></div>
-                <div class="size-selector">
-                    <label>Selecione o tamanho</label>
-                    <div class="sizes">
-                        <button class="size-btn" onclick="selectSize(this)">P</button>
-                        <button class="size-btn selected" onclick="selectSize(this)">M</button>
-                        <button class="size-btn" onclick="selectSize(this)">G</button>
-                        <button class="size-btn" onclick="selectSize(this)">GG</button>
-                    </div>
-                </div>
-                <button class="modal-add" onclick="addFromModal()">ADICIONAR AO CARRINHO</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="toast"></div>
-
-    <script>
-        const products = [
-            { id: 1, name: "Camiseta NVR Basic Preta", price: 79.90, oldPrice: null, installment: "3x de R$ 26,63 sem juros", image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&q=80", badge: "NOVO", category: ["masculino","geral","preta","novidades","mais-vendidos"], gender: "masculino", color: "preta", overlay: null },
-            { id: 2, name: "Camiseta World Wide Branca", price: 89.90, oldPrice: null, installment: "3x de R$ 29,96 sem juros", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80", badge: "NOVO", category: ["masculino","geral","branca","novidades","colecoes"], gender: "masculino", color: "branca", overlay: null },
-            { id: 3, name: "Camiseta Disciplina Preta", price: 99.90, oldPrice: null, installment: "3x de R$ 33,30 sem juros", image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=600&q=80", badge: "NOVO", category: ["masculino","geral","preta","novidades","mais-vendidos","colecoes"], gender: "masculino", color: "preta", overlay: "DISCIPLINA" },
-            { id: 4, name: "Camiseta Minimal Bege", price: 79.90, oldPrice: null, installment: "3x de R$ 26,63 sem juros", image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80", badge: "NOVO", category: ["masculino","feminino","geral","novidades"], gender: "unissex", color: "bege", overlay: null },
-            { id: 5, name: "Camiseta Oversized Preta", price: 109.90, oldPrice: 129.90, installment: "3x de R$ 36,63 sem juros", image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=80", badge: "PROMO", category: ["masculino","geral","preta","promocoes","mais-vendidos"], gender: "masculino", color: "preta", overlay: null },
-            { id: 6, name: "Camiseta Slim Fit Branca", price: 69.90, oldPrice: 89.90, installment: "3x de R$ 23,30 sem juros", image: "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80", badge: "PROMO", category: ["masculino","feminino","geral","branca","promocoes"], gender: "unissex", color: "branca", overlay: null },
-            { id: 7, name: "Camiseta Cropped Feminina", price: 74.90, oldPrice: null, installment: "3x de R$ 24,96 sem juros", image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=600&q=80", badge: "NOVO", category: ["feminino","geral","novidades","colecoes"], gender: "feminino", color: "preta", overlay: null },
-            { id: 8, name: "Camiseta Essential Cinza", price: 84.90, oldPrice: null, installment: "3x de R$ 28,30 sem juros", image: "https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=600&q=80", badge: "NOVO", category: ["masculino","geral","novidades"], gender: "masculino", color: "cinza", overlay: null }
-        ];
-
-        let cart = JSON.parse(localStorage.getItem('camisastore_cart') || '[]');
-        let favorites = JSON.parse(localStorage.getItem('camisastore_favs') || '[]');
-        let currentProduct = null;
-        let selectedSize = "M";
-        let currentFilter = 'all';
-        let currentSearch = '';
-        let isLoggedIn = localStorage.getItem('camisastore_user') || null;
-
-        function renderProducts() {
-            const grid = document.getElementById('productsGrid');
-            let filtered = getFilteredProducts();
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>Nenhum produto encontrado</p><button class="chip" style="margin-top:16px;" onclick="showAllProducts()">Ver todos os produtos</button></div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(p => {
-                const isFav = favorites.includes(p.id);
-                const badgeClass = p.badge === 'PROMO' ? 'badge-promo' : 'badge-novo';
-                return `
-                <div class="product-card" onclick="openProduct(${p.id})">
-                    <div class="product-image">
-                        <span class="${badgeClass}">${p.badge}</span>
-                        <button class="btn-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(${p.id}, this)">
-                            <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-                        </button>
-                        <img src="${p.image}" alt="${p.name}" loading="lazy">
-                        ${p.overlay ? `<div class="product-overlay">${p.overlay}</div>` : ''}
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-price">R$ ${p.price.toFixed(2).replace('.', ',')}${p.oldPrice ? ` <span class="old">R$ ${p.oldPrice.toFixed(2).replace('.', ',')}</span>` : ''}</div>
-                        <div class="product-installment">${p.installment}</div>
-                        <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">Adicionar ao carrinho</button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function getFilteredProducts() {
-            let list = [...products];
-            if (currentSearch) {
-                const q = currentSearch.toLowerCase();
-                list = list.filter(p => p.name.toLowerCase().includes(q) || p.color.includes(q) || p.gender.includes(q));
-            }
-            if (currentFilter && currentFilter !== 'all') {
-                list = list.filter(p => {
-                    if (currentFilter === 'masculino' || currentFilter === 'feminino') return p.gender === currentFilter || p.gender === 'unissex';
-                    if (currentFilter === 'preta' || currentFilter === 'branca') return p.color === currentFilter;
-                    return p.category.includes(currentFilter);
-                });
-            }
-            return list;
-        }
-
-        function setNavFilter(el, filter) {
-            document.querySelectorAll('.nav-center a').forEach(a => a.classList.remove('active'));
-            if (el) el.classList.add('active');
-            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
-            document.querySelector('[data-side="all"]').classList.add('active');
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            document.querySelector('.chip').classList.add('active');
-            currentFilter = filter; currentSearch = '';
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchBar').classList.remove('open');
-            updateSectionTitle(filter); renderProducts();
-            document.getElementById('destaques').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function setSidebarFilter(el, filter) {
-            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
-            if (el) el.classList.add('active');
-            else { const btn = document.querySelector(`[data-side="${filter}"]`); if (btn) btn.classList.add('active'); }
-            document.querySelectorAll('.nav-center a').forEach(a => a.classList.remove('active'));
-            if (filter === 'all') document.querySelector('.nav-center a').classList.add('active');
-            currentFilter = filter; currentSearch = '';
-            document.getElementById('searchInput').value = '';
-            updateSectionTitle(filter); renderProducts();
-            document.getElementById('destaques').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('sidebar').classList.remove('open');
-        }
-
-        function setChipFilter(el, filter) {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            currentFilter = filter;
-            updateSectionTitle(filter); renderProducts();
-        }
-
-        function updateSectionTitle(filter) {
-            const titles = { all:'DESTAQUES', masculino:'MASCULINO', feminino:'FEMININO', geral:'GERAL', novidades:'NOVIDADES', promocoes:'PROMOÇÕES', 'mais-vendidos':'MAIS VENDIDOS', colecoes:'COLEÇÕES', preta:'CAMISETAS PRETAS', branca:'CAMISETAS BRANCAS' };
-            document.getElementById('sectionTitle').textContent = titles[filter] || 'PRODUTOS';
-        }
-
-        function showAllProducts() {
-            currentFilter = 'all'; currentSearch = '';
-            document.getElementById('searchInput').value = '';
-            document.querySelectorAll('.nav-center a').forEach(a => a.classList.remove('active'));
-            document.querySelector('.nav-center a').classList.add('active');
-            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
-            document.querySelector('[data-side="all"]').classList.add('active');
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            document.querySelector('.chip').classList.add('active');
-            updateSectionTitle('all'); renderProducts();
-            showToast('Mostrando todos os produtos');
-        }
-
-        function goHome() { showAllProducts(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
-        function toggleSearch() {
-            const bar = document.getElementById('searchBar');
-            bar.classList.toggle('open');
-            if (bar.classList.contains('open')) document.getElementById('searchInput').focus();
-            else { currentSearch = ''; document.getElementById('searchInput').value = ''; renderProducts(); }
-        }
-
-        function handleSearch(value) {
-            currentSearch = value.trim();
-            document.getElementById('sectionTitle').textContent = currentSearch ? `RESULTADOS PARA "${currentSearch.toUpperCase()}"` : (updateSectionTitle(currentFilter), document.getElementById('sectionTitle').textContent);
-            renderProducts();
-        }
-
-        function addToCart(id, size = "M") {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-            const existing = cart.find(item => item.id === id && item.size === size);
-            if (existing) existing.qty += 1;
-            else cart.push({ ...product, size, qty: 1 });
-            saveCart(); updateCartUI();
-            showToast(`${product.name} adicionada ao carrinho!`);
-        }
-
-        function removeFromCart(id, size) {
-            cart = cart.filter(item => !(item.id === id && item.size === size));
-            saveCart(); updateCartUI();
-        }
-
-        function changeQty(id, size, delta) {
-            const item = cart.find(i => i.id === id && i.size === size);
-            if (!item) return;
-            item.qty += delta;
-            if (item.qty <= 0) removeFromCart(id, size);
-            else { saveCart(); updateCartUI(); }
-        }
-
-        function saveCart() { localStorage.setItem('camisastore_cart', JSON.stringify(cart)); }
-
-        function updateCartUI() {
-            const countEl = document.getElementById('cartCount');
-            const countText = document.getElementById('cartCountText');
-            const itemsEl = document.getElementById('cartItems');
-            const footerEl = document.getElementById('cartFooter');
-            const totalEl = document.getElementById('cartTotal');
-            const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
-            countEl.textContent = totalQty;
-            countText.textContent = totalQty;
-
-            if (cart.length === 0) {
-                itemsEl.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-bag" style="font-size:40px;margin-bottom:16px;opacity:0.3;"></i><p>Seu carrinho está vazio</p><button class="chip" style="margin-top:16px;" onclick="toggleCart(); showAllProducts()">Continuar comprando</button></div>`;
-                footerEl.style.display = 'none';
-                return;
-            }
-            footerEl.style.display = 'block';
-            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-            itemsEl.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <div class="price">R$ ${item.price.toFixed(2).replace('.', ',')} • Tam. ${item.size}</div>
-                        <div class="cart-item-qty">
-                            <button onclick="changeQty(${item.id}, '${item.size}', -1)">−</button>
-                            <span>${item.qty}</span>
-                            <button onclick="changeQty(${item.id}, '${item.size}', 1)">+</button>
-                            <button onclick="removeFromCart(${item.id}, '${item.size}')" style="margin-left:auto;border:none;color:#e11d48;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>`).join('');
-        }
-
-        function toggleCart() {
-            document.getElementById('cartSidebar').classList.toggle('open');
-            document.getElementById('cartOverlay').classList.toggle('open');
-        }
-
-        function checkout() {
-            if (cart.length === 0) return;
-            if (!isLoggedIn) { toggleCart(); toggleAccount(); showToast('Faça login para finalizar a compra'); return; }
-            showToast('Processando pagamento...');
-            setTimeout(() => {
-                alert(`✅ Pedido realizado com sucesso!\n\nTotal: ${document.getElementById('cartTotal').textContent}\n\nVocê receberá um e-mail de confirmação.\n(Este é um site de demonstração)`);
-                cart = []; saveCart(); updateCartUI(); toggleCart();
-            }, 1000);
-        }
-
-        function openProduct(id) {
-            currentProduct = products.find(p => p.id === id);
-            if (!currentProduct) return;
-            document.getElementById('modalImg').src = currentProduct.image;
-            document.getElementById('modalName').textContent = currentProduct.name;
-            document.getElementById('modalPrice').textContent = `R$ ${currentProduct.price.toFixed(2).replace('.', ',')}`;
-            document.getElementById('modalInstallment').textContent = currentProduct.installment;
-            document.getElementById('modalBadge').textContent = currentProduct.badge;
-            document.getElementById('modalBadge').style.background = currentProduct.badge === 'PROMO' ? '#e11d48' : '#111';
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-            document.querySelectorAll('.size-btn')[1].classList.add('selected');
-            selectedSize = "M";
-            document.getElementById('productModal').classList.add('open');
-        }
-
-        function closeModal() { document.getElementById('productModal').classList.remove('open'); }
-        function selectSize(btn) {
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected'); selectedSize = btn.textContent;
-        }
-        function addFromModal() { if (currentProduct) { addToCart(currentProduct.id, selectedSize); closeModal(); } }
-
-        function toggleFav(id, btn) {
-            const idx = favorites.indexOf(id);
-            if (idx > -1) {
-                favorites.splice(idx, 1);
-                btn.classList.remove('active');
-                btn.querySelector('i').classList.replace('fas', 'far');
-                showToast('Removido dos favoritos');
-            } else {
-                favorites.push(id);
-                btn.classList.add('active');
-                btn.querySelector('i').classList.replace('far', 'fas');
-                showToast('Adicionado aos favoritos ❤️');
-            }
-            localStorage.setItem('camisastore_favs', JSON.stringify(favorites));
-        }
-
-        function toggleAccount() {
-            document.getElementById('accountSidebar').classList.toggle('open');
-            document.getElementById('accountOverlay').classList.toggle('open');
-            updateAccountUI();
-        }
-
-        function updateAccountUI() {
-            const body = document.getElementById('accountBody');
-            if (isLoggedIn) {
-                body.innerHTML = `<div class="account-logged"><i class="fas fa-check-circle"></i><h3 style="margin-bottom:8px;">Olá, ${isLoggedIn}!</h3><p style="color:#666;font-size:14px;margin-bottom:24px;">Você está logado.</p><button class="btn-login" style="background:#eee;color:#111;" onclick="doLogout()">SAIR DA CONTA</button></div>`;
-            } else {
-                body.innerHTML = `<div class="account-form"><p style="color:#666;font-size:14px;margin-bottom:8px;">Entre para acompanhar pedidos e favoritos.</p><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com"><label>Senha</label><input type="password" id="loginPass" placeholder="••••••••"><button class="btn-login" onclick="doLogin()">ENTRAR</button><p style="text-align:center;margin-top:16px;font-size:13px;color:#666;">Não tem conta? <a href="#" onclick="doRegister();return false;" style="color:#111;font-weight:600;">Cadastre-se</a></p></div>`;
-            }
-        }
-
-        function doLogin() {
-            const email = document.getElementById('loginEmail')?.value;
-            const pass = document.getElementById('loginPass')?.value;
-            if (!email || !pass) { showToast('Preencha e-mail e senha'); return; }
-            isLoggedIn = email.split('@')[0];
-            localStorage.setItem('camisastore_user', isLoggedIn);
-            showToast(`Bem-vindo(a), ${isLoggedIn}!`);
-            updateAccountUI();
-        }
-
-        function doRegister() {
-            const email = document.getElementById('loginEmail')?.value || 'usuario';
-            isLoggedIn = email.split('@')[0] || 'usuario';
-            localStorage.setItem('camisastore_user', isLoggedIn);
-            showToast('Conta criada com sucesso!');
-            updateAccountUI();
-        }
-
-        function doLogout() {
-            isLoggedIn = null;
-            localStorage.removeItem('camisastore_user');
-            showToast('Você saiu da conta');
-            updateAccountUI();
-        }
-
-        function openReviews() {
-            document.getElementById('reviewsSidebar').classList.add('open');
-            document.getElementById('reviewsOverlay').classList.add('open');
-            document.getElementById('sidebar').classList.remove('open');
-        }
-
-        function closeReviews() {
-            document.getElementById('reviewsSidebar').classList.remove('open');
-            document.getElementById('reviewsOverlay').classList.remove('open');
-        }
-
-        function subscribeNewsletter(e) {
-            e.preventDefault();
-            const email = document.getElementById('emailInput').value;
-            showToast(`E-mail ${email} cadastrado com sucesso! 🎉`);
-            document.getElementById('emailInput').value = '';
-        }
-
-        function openSocial(platform) {
-            const links = { instagram: 'https://instagram.com', tiktok: 'https://tiktok.com', whatsapp: 'https://wa.me/5511999999999?text=Olá!%20Vim%20pelo%20site%20CAMISAS' };
-            showToast(`Abrindo ${platform}...`);
-            setTimeout(() => window.open(links[platform], '_blank'), 400);
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2800);
-        }
-
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-
-        document.getElementById('productModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeModal();
-                document.getElementById('searchBar').classList.remove('open');
-                document.getElementById('cartSidebar').classList.remove('open');
-                document.getElementById('cartOverlay').classList.remove('open');
-                document.getElementById('accountSidebar').classList.remove('open');
-                document.getElementById('accountOverlay').classList.remove('open');
-                closeReviews();
-            }
-        });
-
-        renderProducts();
-        updateCartUI();
-        updateAccountUI();
-    </script>
+<header class="header">
+<div style="display:flex;align-items:center;gap:12px">
+<button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<a class="logo" onclick="goHome()">
+<img src="img/logo.jpg" alt="SG" class="logo-img" onerror="this.outerHTML='<div style=\'width:42px;height:42px;background:#222;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px\'>🦷</div>'">
+<span class="logo-text">SYNTHETIC GRIN</span>
+</a>
+</div>
+<nav class="nav-center">
+<a class="active" onclick="setNavFilter(this,'all')">Home</a>
+<a onclick="setNavFilter(this,'bones')">Bonés</a>
+<a onclick="setNavFilter(this,'camisetas')">Camisetas</a>
+<a onclick="setNavFilter(this,'moletons')">Moletons</a>
+<a onclick="setNavFilter(this,'regatas')">Regatas</a>
+</nav>
+<div class="header-right">
+<button onclick="toggleSearch()"><i class="fas fa-search"></i></button>
+<button onclick="toggleAccount()"><i class="fas fa-user"></i></button>
+<button onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button>
+</div>
+</header>
+<div class="search-bar" id="searchBar"><input type="text" id="searchInput" placeholder="Buscar SYNTHETIC GRIN..." oninput="handleSearch(this.value)"></div>
+<div class="main-layout">
+<aside class="sidebar" id="sidebar">
+<button class="sidebar-item active" data-side="all" onclick="setSidebarFilter(this,'all')"><i class="fas fa-th-large"></i><div class="text-wrap"><span>Todos</span></div></button>
+<div class="sidebar-divider"></div>
+<button class="sidebar-item" data-side="bones" onclick="setSidebarFilter(this,'bones')"><i class="fas fa-hat-cowboy"></i><div class="text-wrap"><span>Bonés</span><span class="sub">Caps metálicos</span></div></button>
+<button class="sidebar-item" data-side="camisetas" onclick="setSidebarFilter(this,'camisetas')"><i class="fas fa-tshirt"></i><div class="text-wrap"><span>Camisetas</span><span class="sub">Tees & long sleeve</span></div></button>
+<button class="sidebar-item" data-side="moletons" onclick="setSidebarFilter(this,'moletons')"><i class="fas fa-hoodie"></i><div class="text-wrap"><span>Moletons</span><span class="sub">Hoodies & crew</span></div></button>
+<button class="sidebar-item" data-side="regatas" onclick="setSidebarFilter(this,'regatas')"><i class="fas fa-vest"></i><div class="text-wrap"><span>Regatas</span><span class="sub">Tanks</span></div></button>
+<button class="sidebar-item" data-side="jaquetas" onclick="setSidebarFilter(this,'jaquetas')"><i class="fas fa-vest-patches"></i><div class="text-wrap"><span>Jaquetas</span><span class="sub">Track & bomber</span></div></button>
+<div class="sidebar-divider"></div>
+<button class="sidebar-item" data-side="novidades" onclick="setSidebarFilter(this,'novidades')"><i class="fas fa-sparkles"></i><div class="text-wrap"><span>Novidades</span><span class="sub">Lançamentos</span></div></button>
+<button class="sidebar-item" data-side="promocoes" onclick="setSidebarFilter(this,'promocoes')"><i class="fas fa-percent"></i><div class="text-wrap"><span>Promoções</span><span class="sub">Ofertas</span></div></button>
+<button class="sidebar-item" onclick="openReviews()"><i class="fas fa-star"></i><div class="text-wrap"><span>Avaliações</span><span class="sub">Reviews</span></div></button>
+</aside>
+<main class="content">
+<section class="hero">
+<div class="hero-bg"></div>
+<div class="hero-content">
+<h1>SYNTHETIC<br>GRIN</h1>
+<p>Streetwear com atitude. Logo metálico, prints agressivos e qualidade premium.</p>
+<button class="btn-primary" onclick="setSidebarFilter(null,'novidades')">VER COLEÇÃO <i class="fas fa-arrow-right"></i></button>
+</div>
+</section>
+<div class="trust-bar">
+<div class="trust-item"><i class="fas fa-truck"></i><div><strong>Frete rápido</strong><span>Todo Brasil</span></div></div>
+<div class="trust-item"><i class="fas fa-shield-alt"></i><div><strong>Compra segura</strong><span>Dados protegidos</span></div></div>
+<div class="trust-item"><i class="fas fa-exchange-alt"></i><div><strong>Troca fácil</strong><span>Até 7 dias</span></div></div>
+</div>
+<section class="section" id="destaques">
+<div class="section-header"><h2 id="sectionTitle">DESTAQUES</h2><button class="view-all" onclick="showAllProducts()">Ver todos →</button></div>
+<div class="filter-chips">
+<button class="chip active" onclick="setChipFilter(this,'all')">Todos</button>
+<button class="chip" onclick="setChipFilter(this,'bones')">Bonés</button>
+<button class="chip" onclick="setChipFilter(this,'camisetas')">Camisetas</button>
+<button class="chip" onclick="setChipFilter(this,'moletons')">Moletons</button>
+<button class="chip" onclick="setChipFilter(this,'regatas')">Regatas</button>
+</div>
+<div class="products-grid" id="productsGrid"></div>
+</section>
+<div class="features">
+<div class="feature-item"><i class="fas fa-award"></i><div><strong>Qualidade Premium</strong><span>Tecidos de elite</span></div></div>
+<div class="feature-item"><i class="fas fa-credit-card"></i><div><strong>Parcele em 3x</strong><span>Sem juros</span></div></div>
+<div class="feature-item"><i class="fas fa-lock"></i><div><strong>100% Seguro</strong><span>Dados protegidos</span></div></div>
+<div class="feature-item"><i class="fas fa-headset"></i><div><strong>Atendimento</strong><span>WhatsApp</span></div></div>
+</div>
+<footer class="footer">
+<div class="footer-left"><i class="fas fa-envelope"></i><div><strong>RECEBA NOVIDADES</strong><span>Cadastre-se</span></div></div>
+<form class="newsletter" onsubmit="subscribeNewsletter(event)"><input type="email" placeholder="Seu e-mail" required id="emailInput"><button type="submit">CADASTRAR</button></form>
+<div class="social"><span>SIGA</span><a onclick="openSocial('instagram')"><i class="fab fa-instagram"></i></a><a onclick="openSocial('tiktok')"><i class="fab fa-tiktok"></i></a><a onclick="openSocial('whatsapp')"><i class="fab fa-whatsapp"></i></a></div>
+</footer>
+</main>
+</div>
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-header"><h3>Carrinho (<span id="cartCountText">0</span>)</h3><button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-footer" id="cartFooter" style="display:none"><div class="cart-total"><span>Total</span><span id="cartTotal">R$ 0,00</span></div><button class="btn-checkout" onclick="checkout()">FINALIZAR COMPRA</button></div>
+</div>
+<div class="account-overlay" id="accountOverlay" onclick="toggleAccount()"></div>
+<div class="account-sidebar" id="accountSidebar">
+<div class="account-header"><h3>Minha Conta</h3><button class="account-close" onclick="toggleAccount()"><i class="fas fa-times"></i></button></div>
+<div class="account-body" id="accountBody"></div>
+</div>
+<div class="reviews-overlay" id="reviewsOverlay" onclick="closeReviews()"></div>
+<div class="reviews-sidebar" id="reviewsSidebar">
+<div class="reviews-header"><h3>Avaliações</h3><button class="reviews-close" onclick="closeReviews()"><i class="fas fa-times"></i></button></div>
+<div class="reviews-body">
+<div class="review-card"><div class="stars">★★★★★</div><p>"Boné com logo metálico é absurdo. Qualidade top."</p><div class="author">— Diego R.</div></div>
+<div class="review-card"><div class="stars">★★★★★</div><p>"Camiseta com print dos dentes ficou perfeita."</p><div class="author">— Larissa M.</div></div>
+<div class="review-card"><div class="stars">★★★★☆</div><p>"Moletom confortável e logo bem feito."</p><div class="author">— Bruno T.</div></div>
+<div class="review-card"><div class="stars">★★★★★</div><p>"Regata com design colorido é a favorita."</p><div class="author">— Rafaela S.</div></div>
+</div>
+</div>
+<div class="modal-overlay" id="productModal">
+<div class="modal">
+<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+<div class="modal-image"><img id="modalImg" src="" alt=""></div>
+<div class="modal-info">
+<span class="badge" id="modalBadge">NOVO</span>
+<h2 id="modalName"></h2>
+<div class="modal-price" id="modalPrice"></div>
+<div class="modal-installment" id="modalInstallment"></div>
+<div class="size-selector"><label>Tamanho</label><div class="sizes" id="sizeOptions"><button class="size-btn" onclick="selectSize(this)">P</button><button class="size-btn selected" onclick="selectSize(this)">M</button><button class="size-btn" onclick="selectSize(this)">G</button><button class="size-btn" onclick="selectSize(this)">GG</button></div></div>
+<button class="modal-add" onclick="addFromModal()">ADICIONAR AO CARRINHO</button>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const products=[
+{id:1,name:"Boné Synthetic Grin - Vinho",price:149.9,oldPrice:null,installment:"3x de R$ 49,97",image:"img/caps.jpg",badge:"NOVO",category:["bones","novidades"],type:"bones"},
+{id:2,name:"Boné Synthetic Grin - Preto",price:149.9,oldPrice:null,installment:"3x de R$ 49,97",image:"img/caps.jpg",badge:"NOVO",category:["bones","novidades"],type:"bones"},
+{id:3,name:"Boné Synthetic Grin - Verde Militar",price:149.9,oldPrice:null,installment:"3x de R$ 49,97",image:"img/caps.jpg",badge:"NOVO",category:["bones"],type:"bones"},
+{id:4,name:"Boné Synthetic Grin - Azul Marinho",price:149.9,oldPrice:null,installment:"3x de R$ 49,97",image:"img/caps.jpg",badge:"NOVO",category:["bones"],type:"bones"},
+{id:5,name:"Boné Synthetic Grin - Cinza",price:139.9,oldPrice:159.9,installment:"3x de R$ 46,63",image:"img/caps.jpg",badge:"PROMO",category:["bones","promocoes"],type:"bones"},
+{id:6,name:"Boné Synthetic Grin - Bege",price:149.9,oldPrice:null,installment:"3x de R$ 49,97",image:"img/caps.jpg",badge:"NOVO",category:["bones"],type:"bones"},
+{id:7,name:"Camiseta Logo Chest - Preta",price:119.9,oldPrice:null,installment:"3x de R$ 39,97",image:"img/tees1.jpg",badge:"NOVO",category:["camisetas","novidades"],type:"camisetas"},
+{id:8,name:"Camiseta Logo Chest - Branca",price:119.9,oldPrice:null,installment:"3x de R$ 39,97",image:"img/tees1.jpg",badge:"NOVO",category:["camisetas"],type:"camisetas"},
+{id:9,name:"Camiseta Long Sleeve - Preta",price:139.9,oldPrice:null,installment:"3x de R$ 46,63",image:"img/tees1.jpg",badge:"NOVO",category:["camisetas"],type:"camisetas"},
+{id:10,name:"Camiseta Geometric Black",price:129.9,oldPrice:null,installment:"3x de R$ 43,30",image:"img/tees2.jpg",badge:"NOVO",category:["camisetas","novidades"],type:"camisetas"},
+{id:11,name:"Camiseta Full Teeth - Preta",price:139.9,oldPrice:null,installment:"3x de R$ 46,63",image:"img/tees5.jpg",badge:"NOVO",category:["camisetas","novidades"],type:"camisetas"},
+{id:12,name:"Camiseta Full Teeth - Branca",price:139.9,oldPrice:null,installment:"3x de R$ 46,63",image:"img/tees5.jpg",badge:"NOVO",category:["camisetas"],type:"camisetas"},
+{id:13,name:"Camiseta Full Teeth Long Sleeve",price:159.9,oldPrice:179.9,installment:"3x de R$ 53,30",image:"img/tees5.jpg",badge:"PROMO",category:["camisetas","promocoes"],type:"camisetas"},
+{id:14,name:"Camiseta Embossed Pattern",price:129.9,oldPrice:null,installment:"3x de R$ 43,30",image:"img/tees4.jpg",badge:"NOVO",category:["camisetas"],type:"camisetas"},
+{id:15,name:"Camiseta Embossed White",price:129.9,oldPrice:null,installment:"3x de R$ 43,30",image:"img/tees4.jpg",badge:"NOVO",category:["camisetas"],type:"camisetas"},
+{id:16,name:"Regata Logo - Preta",price:99.9,oldPrice:null,installment:"3x de R$ 33,30",image:"img/tees1.jpg",badge:"NOVO",category:["regatas","novidades"],type:"regatas"},
+{id:17,name:"Regata Neon Teeth",price:119.9,oldPrice:null,installment:"3x de R$ 39,97",image:"img/tees2.jpg",badge:"NOVO",category:["regatas","novidades"],type:"regatas"},
+{id:18,name:"Regata Full Teeth",price:109.9,oldPrice:null,installment:"3x de R$ 36,63",image:"img/tees5.jpg",badge:"NOVO",category:["regatas"],type:"regatas"},
+{id:19,name:"Moletom Crewneck Embossed",price:199.9,oldPrice:null,installment:"3x de R$ 66,63",image:"img/tees2.jpg",badge:"NOVO",category:["moletons","novidades"],type:"moletons"},
+{id:20,name:"Hoodie Synthetic Grin",price:229.9,oldPrice:null,installment:"3x de R$ 76,63",image:"img/tees4.jpg",badge:"NOVO",category:["moletons","novidades"],type:"moletons"},
+{id:21,name:"Long Sleeve Athletic",price:149.9,oldPrice:169.9,installment:"3x de R$ 49,97",image:"img/tees4.jpg",badge:"PROMO",category:["moletons","promocoes"],type:"moletons"},
+{id:22,name:"Jaqueta Dragon Track",price:299.9,oldPrice:null,installment:"3x de R$ 99,97",image:"img/tees3.jpg",badge:"NOVO",category:["jaquetas","novidades"],type:"jaquetas"},
+{id:23,name:"Jaqueta Dragon Wave",price:319.9,oldPrice:null,installment:"3x de R$ 106,63",image:"img/tees3.jpg",badge:"NOVO",category:["jaquetas","novidades"],type:"jaquetas"}
+];
+let cart=JSON.parse(localStorage.getItem('sg_cart')||'[]');
+let favorites=JSON.parse(localStorage.getItem('sg_favs')||'[]');
+let currentProduct=null,selectedSize="M",currentFilter='all',currentSearch='',isLoggedIn=localStorage.getItem('sg_user')||null;
+function renderProducts(){const grid=document.getElementById('productsGrid');let filtered=getFilteredProducts();if(!filtered.length){grid.innerHTML=`<div class="empty-state"><i class="fas fa-search" style="font-size:36px;opacity:.3"></i><p>Nenhum produto</p><button class="chip" style="margin-top:12px" onclick="showAllProducts()">Ver todos</button></div>`;return}grid.innerHTML=filtered.map(p=>{const isFav=favorites.includes(p.id);const bc=p.badge==='PROMO'?'badge-promo':'badge-novo';return`<div class="product-card" onclick="openProduct(${p.id})"><div class="product-image"><span class="${bc}">${p.badge}</span><button class="btn-fav ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav(${p.id},this)"><i class="${isFav?'fas':'far'} fa-heart"></i></button><img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x400/111/666?text=SG'"></div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-price">R$ ${p.price.toFixed(2).replace('.',',')}${p.oldPrice?` <span class="old">R$ ${p.oldPrice.toFixed(2).replace('.',',')}</span>`:''}</div><div class="product-installment">${p.installment}</div><button class="btn-add" onclick="event.stopPropagation();addToCart(${p.id})">Adicionar</button></div></div>`}).join('')}
+function getFilteredProducts(){let list=[...products];if(currentSearch){const q=currentSearch.toLowerCase();list=list.filter(p=>p.name.toLowerCase().includes(q)||p.type.includes(q))}if(currentFilter&&currentFilter!=='all')list=list.filter(p=>p.category.includes(currentFilter)||p.type===currentFilter);return list}
+function setNavFilter(el,f){document.querySelectorAll('.nav-center a').forEach(a=>a.classList.remove('active'));if(el)el.classList.add('active');document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));const side=document.querySelector(`[data-side="${f}"]`);if(side)side.classList.add('active');document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));document.querySelector('.chip').classList.add('active');currentFilter=f;currentSearch='';document.getElementById('searchInput').value='';document.getElementById('searchBar').classList.remove('open');updateSectionTitle(f);renderProducts();document.getElementById('destaques').scrollIntoView({behavior:'smooth'})}
+function setSidebarFilter(el,f){document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));if(el)el.classList.add('active');else{const b=document.querySelector(`[data-side="${f}"]`);if(b)b.classList.add('active')}document.querySelectorAll('.nav-center a').forEach(a=>a.classList.remove('active'));currentFilter=f;currentSearch='';document.getElementById('searchInput').value='';updateSectionTitle(f);renderProducts();document.getElementById('destaques').scrollIntoView({behavior:'smooth'});document.getElementById('sidebar').classList.remove('open')}
+function setChipFilter(el,f){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');currentFilter=f;updateSectionTitle(f);renderProducts()}
+function updateSectionTitle(f){const t={all:'DESTAQUES',bones:'BONÉS',camisetas:'CAMISETAS',moletons:'MOLETONS',regatas:'REGATAS',jaquetas:'JAQUETAS',novidades:'NOVIDADES',promocoes:'PROMOÇÕES'};document.getElementById('sectionTitle').textContent=t[f]||'PRODUTOS'}
+function showAllProducts(){currentFilter='all';currentSearch='';document.getElementById('searchInput').value='';document.querySelectorAll('.nav-center a').forEach(a=>a.classList.remove('active'));document.querySelector('.nav-center a').classList.add('active');document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));document.querySelector('[data-side="all"]').classList.add('active');document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));document.querySelector('.chip').classList.add('active');updateSectionTitle('all');renderProducts();showToast('Todos os produtos')}
+function goHome(){showAllProducts();window.scrollTo({top:0,behavior:'smooth'})}
+function toggleSearch(){const bar=document.getElementById('searchBar');bar.classList.toggle('open');if(bar.classList.contains('open'))document.getElementById('searchInput').focus();else{currentSearch='';document.getElementById('searchInput').value='';renderProducts()}}
+function handleSearch(v){currentSearch=v.trim();document.getElementById('sectionTitle').textContent=currentSearch?`BUSCA: "${currentSearch.toUpperCase()}"`:(updateSectionTitle(currentFilter),'');renderProducts()}
+function addToCart(id,size="M"){const p=products.find(x=>x.id===id);if(!p)return;const ex=cart.find(i=>i.id===id&&i.size===size);if(ex)ex.qty+=1;else cart.push({...p,size,qty:1});localStorage.setItem('sg_cart',JSON.stringify(cart));updateCartUI();showToast(`${p.name} adicionada!`)}
+function removeFromCart(id,size){cart=cart.filter(i=>!(i.id===id&&i.size===size));localStorage.setItem('sg_cart',JSON.stringify(cart));updateCartUI()}
+function changeQty(id,size,d){const item=cart.find(i=>i.id===id&&i.size===size);if(!item)return;item.qty+=d;if(item.qty<=0)removeFromCart(id,size);else{localStorage.setItem('sg_cart',JSON.stringify(cart));updateCartUI()}}
+function updateCartUI(){const totalQty=cart.reduce((s,i)=>s+i.qty,0);document.getElementById('cartCount').textContent=totalQty;document.getElementById('cartCountText').textContent=totalQty;const itemsEl=document.getElementById('cartItems');const footer=document.getElementById('cartFooter');if(!cart.length){itemsEl.innerHTML=`<div class="cart-empty"><i class="fas fa-shopping-bag" style="font-size:32px;margin-bottom:10px;opacity:.3"></i><p>Carrinho vazio</p></div>`;footer.style.display='none';return}footer.style.display='block';const total=cart.reduce((s,i)=>s+i.price*i.qty,0);document.getElementById('cartTotal').textContent=`R$ ${total.toFixed(2).replace('.',',')}`;itemsEl.innerHTML=cart.map(i=>`<div class="cart-item"><img src="${i.image}" alt="${i.name}" onerror="this.src='https://via.placeholder.com/80'"><div class="cart-item-info"><h4>${i.name}</h4><div class="price">R$ ${i.price.toFixed(2).replace('.',',')} • ${i.size}</div><div class="cart-item-qty"><button onclick="changeQty(${i.id},'${i.size}',-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${i.id},'${i.size}',1)">+</button><button onclick="removeFromCart(${i.id},'${i.size}')" style="margin-left:auto;border:none;color:#e11d48;background:none;cursor:pointer"><i class="fas fa-trash"></i></button></div></div></div>`).join('')}
+function toggleCart(){document.getElementById('cartSidebar').classList.toggle('open');document.getElementById('cartOverlay').classList.toggle('open')}
+function checkout(){if(!cart.length)return;if(!isLoggedIn){toggleCart();toggleAccount();showToast('Faça login para comprar');return}showToast('Processando...');setTimeout(()=>{alert(`✅ Pedido confirmado!\nTotal: ${document.getElementById('cartTotal').textContent}\n\n(Demo Synthetic Grin)`);cart=[];localStorage.setItem('sg_cart','[]');updateCartUI();toggleCart()},900)}
+function openProduct(id){currentProduct=products.find(p=>p.id===id);if(!currentProduct)return;document.getElementById('modalImg').src=currentProduct.image;document.getElementById('modalName').textContent=currentProduct.name;document.getElementById('modalPrice').textContent=`R$ ${currentProduct.price.toFixed(2).replace('.',',')}`;document.getElementById('modalInstallment').textContent=currentProduct.installment;document.getElementById('modalBadge').textContent=currentProduct.badge;const sizeBox=document.getElementById('sizeOptions');if(currentProduct.type==='bones'){sizeBox.innerHTML=`<button class="size-btn selected" onclick="selectSize(this)">Único</button>`;selectedSize='Único'}else{sizeBox.innerHTML=`<button class="size-btn" onclick="selectSize(this)">P</button><button class="size-btn selected" onclick="selectSize(this)">M</button><button class="size-btn" onclick="selectSize(this)">G</button><button class="size-btn" onclick="selectSize(this)">GG</button>`;selectedSize='M'}document.getElementById('productModal').classList.add('open')}
+function closeModal(){document.getElementById('productModal').classList.remove('open')}
+function selectSize(btn){document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedSize=btn.textContent}
+function addFromModal(){if(currentProduct){addToCart(currentProduct.id,selectedSize);closeModal()}}
+function toggleFav(id,btn){const idx=favorites.indexOf(id);if(idx>-1){favorites.splice(idx,1);btn.classList.remove('active');btn.querySelector('i').classList.replace('fas','far');showToast('Removido dos favoritos')}else{favorites.push(id);btn.classList.add('active');btn.querySelector('i').classList.replace('far','fas');showToast('Favoritado ❤️')}localStorage.setItem('sg_favs',JSON.stringify(favorites))}
+function toggleAccount(){document.getElementById('accountSidebar').classList.toggle('open');document.getElementById('accountOverlay').classList.toggle('open');updateAccountUI()}
+function updateAccountUI(){const body=document.getElementById('accountBody');if(isLoggedIn){body.innerHTML=`<div class="account-logged"><i class="fas fa-check-circle"></i><h3 style="margin-bottom:6px;color:white">Olá, ${isLoggedIn}!</h3><p style="color:#888;font-size:12px;margin-bottom:18px">Logado</p><button class="btn-login" style="background:#333;color:white" onclick="doLogout()">SAIR</button></div>`}else{body.innerHTML=`<div class="account-form"><p style="color:#888;font-size:12px;margin-bottom:8px">Entre para comprar</p><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com"><label>Senha</label><input type="password" id="loginPass" placeholder="••••••••"><button class="btn-login" onclick="doLogin()">ENTRAR</button><p style="text-align:center;margin-top:12px;font-size:11px;color:#666">Não tem conta? <a href="#" onclick="doRegister();return false" style="color:white;font-weight:600">Cadastre-se</a></p></div>`}}
+function doLogin(){const email=document.getElementById('loginEmail')?.value;const pass=document.getElementById('loginPass')?.value;if(!email||!pass){showToast('Preencha os campos');return}isLoggedIn=email.split('@')[0];localStorage.setItem('sg_user',isLoggedIn);showToast(`Bem-vindo, ${isLoggedIn}!`);updateAccountUI()}
+function doRegister(){const email=document.getElementById('loginEmail')?.value||'usuario';isLoggedIn=email.split('@')[0]||'usuario';localStorage.setItem('sg_user',isLoggedIn);showToast('Conta criada!');updateAccountUI()}
+function doLogout(){isLoggedIn=null;localStorage.removeItem('sg_user');showToast('Saiu');updateAccountUI()}
+function openReviews(){document.getElementById('reviewsSidebar').classList.add('open');document.getElementById('reviewsOverlay').classList.add('open');document.getElementById('sidebar').classList.remove('open')}
+function closeReviews(){document.getElementById('reviewsSidebar').classList.remove('open');document.getElementById('reviewsOverlay').classList.remove('open')}
+function subscribeNewsletter(e){e.preventDefault();showToast('E-mail cadastrado! 🎉');document.getElementById('emailInput').value=''}
+function openSocial(p){const links={instagram:'https://instagram.com',tiktok:'https://tiktok.com',whatsapp:'https://wa.me/5511999999999?text=Olá%20Synthetic%20Grin'};showToast(`Abrindo ${p}...`);setTimeout(()=>window.open(links[p],'_blank'),300)}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+document.getElementById('productModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();document.getElementById('searchBar').classList.remove('open');document.getElementById('cartSidebar').classList.remove('open');document.getElementById('cartOverlay').classList.remove('open');document.getElementById('accountSidebar').classList.remove('open');document.getElementById('accountOverlay').classList.remove('open');closeReviews()}});
+renderProducts();updateCartUI();updateAccountUI();
+</script>
 </body>
 </html>
