@@ -388,20 +388,6 @@ async function checkout() {
   if (error) { showToast('Erro: ' + error.message); return; }
   const items = cart.map(i => ({ order_id: order.id, product_id: i.id, quantity: i.qty, size: i.size, price: i.price }));
   await supabaseClient.from('order_items').insert(items);
-  await fetch("/api/send-order", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        orderId: order.id,
-        total,
-        customer: currentUser.email,
-        items: cart.map(i =>
-            `${i.qty}x ${i.name} (${i.size})`
-        ).join("\n")
-    })
-});
   cart = [];
   localStorage.setItem('sg_cart', '[]');
   updateCartUI();
