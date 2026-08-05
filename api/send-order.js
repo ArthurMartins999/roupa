@@ -1,97 +1,79 @@
-import { Resend } from "resend";
+const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async function handler(req, res) {
-
-  // Permite apenas POST
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Método não permitido"
-    });
-  }
+module.exports = async function handler(req, res) {
 
   try {
 
-    const { orderId, total, items, customer } = req.body;
-
-
-    // Verifica se recebeu os dados
-    if (!customer || !items) {
-      return res.status(400).json({
-        error: "Dados incompletos"
+    if (req.method !== "POST") {
+      return res.status(405).json({
+        error: "Método não permitido"
       });
     }
 
 
-    // Monta a lista dos produtos
+    const { orderId, total, items, customer } = req.body;
+
+
+    if (!customer || !items) {
+      return res.status(400).json({
+        error: "Dados faltando"
+      });
+    }
+
+
     const produtos = items.map(item => `
-      <tr>
-        <td>${item.name}</td>
-        <td>${item.quantity}</td>
-        <td>R$ ${item.price}</td>
-      </tr>
+      <p>
+        ${item.name} - Quantidade: ${item.quantity}
+      </p>
     `).join("");
 
 
-    // Envia o email
     const email = await resend.emails.send({
 
       from: "onboarding@resend.dev",
 
-      to: "SEU_EMAIL_AQUI@gmail.com",
+      to: "SEU_EMAIL@gmail.com",
 
-      subject: `Novo pedido #${orderId}`,
+      subject: "Novo pedido recebido",
 
       html: `
-        <h1>Novo pedido recebido 🚀</h1>
+        <h1>Novo pedido</h1>
+
+        <p>ID: ${orderId}</p>
 
         <h2>Cliente</h2>
-
         <p>
-          Nome: ${customer.name}<br>
-          Email: ${customer.email}
+        ${customer.name}<br>
+        ${customer.email}
         </p>
-
 
         <h2>Produtos</h2>
 
-        <table border="1" cellpadding="10">
-          <tr>
-            <th>Produto</th>
-            <th>Quantidade</th>
-            <th>Preço</th>
-          </tr>
-
-          ${produtos}
-
-        </table>
-
+        ${produtos}
 
         <h2>Total</h2>
 
-        <h3>R$ ${total}</h3>
-
+        R$ ${total}
       `
     });
 
 
     return res.status(200).json({
       ok: true,
-      message: "Pedido enviado com sucesso!",
-      id: email.data?.id
+      email
     });
 
 
-  } catch (error) {
+  } catch(error){
 
-    console.error(error);
+    console.log(error);
 
     return res.status(500).json({
-      error: "Erro ao enviar email",
-      details: error.message
+      erro: error.message
     });
 
   }
 
-}
+};
