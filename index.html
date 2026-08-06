@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#eee;min-height:100vh;overflow-x:hidden}
@@ -242,8 +243,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#eee;min-height:100
 const SUPABASE_URL = 'https://nwymzwxrwzaomwocwdkt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53eW16d3hyd3phb213b2N3ZGt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3OTU1MjMsImV4cCI6MjEwMTM3MTUyM30.C9R0slf6-JdGUP9pCKPR_FWiGnFJdEt_nR23ZMzGV0U';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const ADMIN_EMAIL = 'arthurmartins2325@icloud.com';
-
+const ADMIN_EMAIL = 'syntheticgrin01@gmail.com';
 
 let products = [];
 let cart = JSON.parse(localStorage.getItem('sg_cart') || '[]');
@@ -388,6 +388,20 @@ async function checkout() {
   if (error) { showToast('Erro: ' + error.message); return; }
   const items = cart.map(i => ({ order_id: order.id, product_id: i.id, quantity: i.qty, size: i.size, price: i.price }));
   await supabaseClient.from('order_items').insert(items);
+
+  // Envia e-mail pelo EmailJS
+  const listaProdutos = cart.map(i => '• ' + i.name + ' (' + i.size + ') x' + i.qty + ' - R$ ' + (i.price * i.qty).toFixed(2).replace('.', ',')).join('\\n');
+  try {
+    await emailjs.send('service_eosjbi7', 'template_x52306c', {
+      order_id: order.id,
+      client_email: currentUser.email,
+      total: total.toFixed(2).replace('.', ','),
+      items: listaProdutos
+    }, '9fOyy__ZCT9pMv9-X');
+  } catch (e) {
+    console.error('Erro EmailJS:', e);
+  }
+
   cart = [];
   localStorage.setItem('sg_cart', '[]');
   updateCartUI();
